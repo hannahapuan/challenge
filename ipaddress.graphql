@@ -1,0 +1,27 @@
+# Maps a Time GraphQL scalar to a Go time.Time struct.
+scalar Time
+
+type IPAddress {
+    uuid: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    responseCode: String!
+    ipAddress: String!
+}
+
+input IPAddressInput {
+    uuid: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    responseCode: String!
+    ipAddress: String!
+}
+
+type Mutation {
+    enqueue(ipaddress: IPAddressInput!): IPAddress!
+}
+
+# Define a query for getting all todos.
+type Query {
+    ipaddresses: [IPAddress!]
+}
