@@ -19,7 +19,6 @@ func (IPAddress) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("uuid").
 			Immutable().
-			Optional().
 			Unique(),
 		field.Time("created_at").
 			Default(time.Now).

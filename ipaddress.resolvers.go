@@ -19,7 +19,7 @@ func (r *iPAddressResolver) UUID(ctx context.Context, obj *ent.IPAddress) (int, 
 
 func (r *mutationResolver) Enqueue(ctx context.Context, input []string) ([]*ent.IPAddress, error) {
 	var export []*ent.IPAddress
-	// now := time.Now()
+
 	for _, ia := range input {
 		_, err := r.client.IPAddress.Create().
 			SetUUID(uuid.New().String()).
@@ -43,10 +43,10 @@ func (r *queryResolver) GetIPDetails(ctx context.Context, ip string) (*ent.IPAdd
 			s.Where(sql.In(ipaddress.FieldIPAddress, ip))
 		}).
 		All(ctx)
+
+	err = getIPDetailsError(resp, err)
 	if err != nil {
 		return nil, err
-	} else if len(resp) > 1 {
-		return nil, fmt.Errorf("found more than one IP Address record")
 	} else if len(resp) == 0 {
 		return nil, nil
 	}
