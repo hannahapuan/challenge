@@ -55,11 +55,11 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		Enqueue func(childComplexity int, input []*IPAddressInput) int
+		Enqueue func(childComplexity int, input []string) int
 	}
 
 	Query struct {
-		GetIPDetails func(childComplexity int, ip IPAddressInput) int
+		GetIPDetails func(childComplexity int, ip string) int
 	}
 }
 
@@ -67,10 +67,10 @@ type IPAddressResolver interface {
 	UUID(ctx context.Context, obj *ent.IPAddress) (int, error)
 }
 type MutationResolver interface {
-	Enqueue(ctx context.Context, input []*IPAddressInput) ([]*ent.IPAddress, error)
+	Enqueue(ctx context.Context, input []string) ([]*ent.IPAddress, error)
 }
 type QueryResolver interface {
-	GetIPDetails(ctx context.Context, ip IPAddressInput) (*ent.IPAddress, error)
+	GetIPDetails(ctx context.Context, ip string) (*ent.IPAddress, error)
 }
 
 type executableSchema struct {
@@ -133,7 +133,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Enqueue(childComplexity, args["input"].([]*IPAddressInput)), true
+		return e.complexity.Mutation.Enqueue(childComplexity, args["input"].([]string)), true
 
 	case "Query.getIPDetails":
 		if e.complexity.Query.GetIPDetails == nil {
@@ -145,7 +145,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetIPDetails(childComplexity, args["ip"].(IPAddressInput)), true
+		return e.complexity.Query.GetIPDetails(childComplexity, args["ip"].(string)), true
 
 	}
 	return 0, false
@@ -227,11 +227,11 @@ input IPAddressInput {
 }
 
 type Mutation {
-    enqueue(input: [IPAddressInput!]): [IPAddress]
+    enqueue(input: [String!]): [IPAddress]
 }
 
 type Query {
-  getIPDetails(ip: IPAddressInput!): IPAddress
+  getIPDetails(ip: String!): IPAddress
 }
 `, BuiltIn: false},
 }
@@ -244,10 +244,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_enqueue_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*IPAddressInput
+	var arg0 []string
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOIPAddressInput2ᚕᚖchallengeᚐIPAddressInputᚄ(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚕstringᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -274,10 +274,10 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_getIPDetails_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 IPAddressInput
+	var arg0 string
 	if tmp, ok := rawArgs["ip"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ip"))
-		arg0, err = ec.unmarshalNIPAddressInput2challengeᚐIPAddressInput(ctx, tmp)
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -558,7 +558,7 @@ func (ec *executionContext) _Mutation_enqueue(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Enqueue(rctx, fc.Args["input"].([]*IPAddressInput))
+		return ec.resolvers.Mutation().Enqueue(rctx, fc.Args["input"].([]string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -622,7 +622,7 @@ func (ec *executionContext) _Query_getIPDetails(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetIPDetails(rctx, fc.Args["ip"].(IPAddressInput))
+		return ec.resolvers.Query().GetIPDetails(rctx, fc.Args["ip"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3240,16 +3240,6 @@ func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.Selectio
 	return res
 }
 
-func (ec *executionContext) unmarshalNIPAddressInput2challengeᚐIPAddressInput(ctx context.Context, v interface{}) (IPAddressInput, error) {
-	res, err := ec.unmarshalInputIPAddressInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNIPAddressInput2ᚖchallengeᚐIPAddressInput(ctx context.Context, v interface{}) (*IPAddressInput, error) {
-	res, err := ec.unmarshalInputIPAddressInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3607,7 +3597,7 @@ func (ec *executionContext) marshalOIPAddress2ᚖchallengeᚋentᚐIPAddress(ctx
 	return ec._IPAddress(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOIPAddressInput2ᚕᚖchallengeᚐIPAddressInputᚄ(ctx context.Context, v interface{}) ([]*IPAddressInput, error) {
+func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -3616,15 +3606,33 @@ func (ec *executionContext) unmarshalOIPAddressInput2ᚕᚖchallengeᚐIPAddress
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*IPAddressInput, len(vSlice))
+	res := make([]string, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNIPAddressInput2ᚖchallengeᚐIPAddressInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
 	}
 	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

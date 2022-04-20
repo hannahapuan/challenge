@@ -17,13 +17,13 @@ func (r *iPAddressResolver) UUID(ctx context.Context, obj *ent.IPAddress) (int, 
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) Enqueue(ctx context.Context, input []*IPAddressInput) ([]*ent.IPAddress, error) {
+func (r *mutationResolver) Enqueue(ctx context.Context, input []string) ([]*ent.IPAddress, error) {
 	var export []*ent.IPAddress
 	// now := time.Now()
 	for _, ia := range input {
 		_, err := r.client.IPAddress.Create().
 			SetUUID(uuid.New().String()).
-			SetIPAddress(ia.IPAddress).
+			SetIPAddress(ia).
 			SetResponseCode("400").
 			Save(ctx)
 
@@ -31,16 +31,16 @@ func (r *mutationResolver) Enqueue(ctx context.Context, input []*IPAddressInput)
 			return nil, err
 		}
 		export = append(export, &ent.IPAddress{
-			IPAddress: ia.IPAddress,
+			IPAddress: ia,
 		})
 	}
 	return export, nil
 }
 
-func (r *queryResolver) GetIPDetails(ctx context.Context, ip IPAddressInput) (*ent.IPAddress, error) {
+func (r *queryResolver) GetIPDetails(ctx context.Context, ip string) (*ent.IPAddress, error) {
 	resp, err := r.client.IPAddress.Query().
 		Where(func(s *sql.Selector) {
-			s.Where(sql.In(ipaddress.FieldIPAddress, ip.IPAddress))
+			s.Where(sql.In(ipaddress.FieldIPAddress, ip))
 		}).
 		All(ctx)
 	if err != nil {

@@ -14,9 +14,9 @@ input IPAddressInput {
 }
 
 type Mutation {
-    enqueue(input: [IPAddressInput!]): [IPAddress]
+    enqueue(input: [String!]): [IPAddress]
 }
 
 type Query {
-  getIPDetails(ip: IPAddressInput!): IPAddress
+  getIPDetails(ip: String!): IPAddress
 }
