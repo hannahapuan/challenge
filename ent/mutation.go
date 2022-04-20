@@ -11,8 +11,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
-
 	"entgo.io/ent"
 )
 
@@ -34,7 +32,7 @@ type IPAddressMutation struct {
 	op            Op
 	typ           string
 	id            *int
-	uuid          *uuid.UUID
+	uuid          *string
 	created_at    *time.Time
 	updated_at    *time.Time
 	response_code *string
@@ -144,12 +142,12 @@ func (m *IPAddressMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetUUID sets the "uuid" field.
-func (m *IPAddressMutation) SetUUID(u uuid.UUID) {
-	m.uuid = &u
+func (m *IPAddressMutation) SetUUID(s string) {
+	m.uuid = &s
 }
 
 // UUID returns the value of the "uuid" field in the mutation.
-func (m *IPAddressMutation) UUID() (r uuid.UUID, exists bool) {
+func (m *IPAddressMutation) UUID() (r string, exists bool) {
 	v := m.uuid
 	if v == nil {
 		return
@@ -160,7 +158,7 @@ func (m *IPAddressMutation) UUID() (r uuid.UUID, exists bool) {
 // OldUUID returns the old "uuid" field's value of the IPAddress entity.
 // If the IPAddress object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IPAddressMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *IPAddressMutation) OldUUID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUUID is only allowed on UpdateOne operations")
 	}
@@ -174,9 +172,22 @@ func (m *IPAddressMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error
 	return oldValue.UUID, nil
 }
 
+// ClearUUID clears the value of the "uuid" field.
+func (m *IPAddressMutation) ClearUUID() {
+	m.uuid = nil
+	m.clearedFields[ipaddress.FieldUUID] = struct{}{}
+}
+
+// UUIDCleared returns if the "uuid" field was cleared in this mutation.
+func (m *IPAddressMutation) UUIDCleared() bool {
+	_, ok := m.clearedFields[ipaddress.FieldUUID]
+	return ok
+}
+
 // ResetUUID resets all changes to the "uuid" field.
 func (m *IPAddressMutation) ResetUUID() {
 	m.uuid = nil
+	delete(m.clearedFields, ipaddress.FieldUUID)
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -405,7 +416,7 @@ func (m *IPAddressMutation) OldField(ctx context.Context, name string) (ent.Valu
 func (m *IPAddressMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case ipaddress.FieldUUID:
-		v, ok := value.(uuid.UUID)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -468,7 +479,11 @@ func (m *IPAddressMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *IPAddressMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(ipaddress.FieldUUID) {
+		fields = append(fields, ipaddress.FieldUUID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -481,6 +496,11 @@ func (m *IPAddressMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *IPAddressMutation) ClearField(name string) error {
+	switch name {
+	case ipaddress.FieldUUID:
+		m.ClearUUID()
+		return nil
+	}
 	return fmt.Errorf("unknown IPAddress nullable field %s", name)
 }
 

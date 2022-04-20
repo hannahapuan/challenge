@@ -10,18 +10,13 @@ type IPAddress {
 }
 
 input IPAddressInput {
-    uuid: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    responseCode: String!
     ipAddress: String!
 }
 
 type Mutation {
-    enqueue(ipaddress: IPAddressInput!): IPAddress!
+    enqueue(input: [IPAddressInput!]): [IPAddress]
 }
 
-# Define a query for getting all todos.
 type Query {
-    ipaddresses: [IPAddress!]
+  getIPDetails(ip: IPAddressInput!): IPAddress
 }

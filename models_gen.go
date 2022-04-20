@@ -2,22 +2,6 @@
 
 package ipaddress
 
-import (
-	"time"
-)
-
-type IPAddress struct {
-	UUID         string    `json:"uuid"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
-	ResponseCode string    `json:"responseCode"`
-	IPAddress    string    `json:"ipAddress"`
-}
-
 type IPAddressInput struct {
-	UUID         string    `json:"uuid"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
-	ResponseCode string    `json:"responseCode"`
-	IPAddress    string    `json:"ipAddress"`
+	IPAddress string `json:"ipAddress"`
 }

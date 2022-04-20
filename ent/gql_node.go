@@ -58,7 +58,7 @@ func (ia *IPAddress) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Fields[0] = &Field{
-		Type:  "uuid.UUID",
+		Type:  "string",
 		Name:  "uuid",
 		Value: string(buf),
 	}

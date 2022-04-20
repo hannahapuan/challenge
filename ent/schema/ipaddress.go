@@ -3,8 +3,6 @@ package schema
 import (
 	"time"
 
-	"github.com/google/uuid"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -15,18 +13,23 @@ type IPAddress struct {
 }
 
 // TODO: add validation for ipv4 to ipaddress field value
+// TODO: add validation for response codes
 // Fields of the IPAddress.
 func (IPAddress) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("uuid", uuid.New()).
-			Immutable(),
+		field.String("uuid").
+			Immutable().
+			Optional().
+			Unique(),
 		field.Time("created_at").
 			Default(time.Now).
 			Immutable(),
 		field.Time("updated_at").
 			Default(time.Now),
 		field.String("response_code"),
-		field.String("ip_address"),
+		field.String("ip_address").
+			Unique().
+			Immutable(),
 	}
 }
 

@@ -254,7 +254,7 @@ func (iaq *IPAddressQuery) Clone() *IPAddressQuery {
 // Example:
 //
 //	var v []struct {
-//		UUID uuid.UUID `json:"uuid,omitempty"`
+//		UUID string `json:"uuid,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -281,7 +281,7 @@ func (iaq *IPAddressQuery) GroupBy(field string, fields ...string) *IPAddressGro
 // Example:
 //
 //	var v []struct {
-//		UUID uuid.UUID `json:"uuid,omitempty"`
+//		UUID string `json:"uuid,omitempty"`
 //	}
 //
 //	client.IPAddress.Query().

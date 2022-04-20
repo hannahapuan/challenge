@@ -48,12 +48,6 @@ func (iau *IPAddressUpdate) SetResponseCode(s string) *IPAddressUpdate {
 	return iau
 }
 
-// SetIPAddress sets the "ip_address" field.
-func (iau *IPAddressUpdate) SetIPAddress(s string) *IPAddressUpdate {
-	iau.mutation.SetIPAddress(s)
-	return iau
-}
-
 // Mutation returns the IPAddressMutation object of the builder.
 func (iau *IPAddressUpdate) Mutation() *IPAddressMutation {
 	return iau.mutation
@@ -131,6 +125,12 @@ func (iau *IPAddressUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if iau.mutation.UUIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: ipaddress.FieldUUID,
+		})
+	}
 	if value, ok := iau.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -143,13 +143,6 @@ func (iau *IPAddressUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: ipaddress.FieldResponseCode,
-		})
-	}
-	if value, ok := iau.mutation.IPAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: ipaddress.FieldIPAddress,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, iau.driver, _spec); err != nil {
@@ -188,12 +181,6 @@ func (iauo *IPAddressUpdateOne) SetNillableUpdatedAt(t *time.Time) *IPAddressUpd
 // SetResponseCode sets the "response_code" field.
 func (iauo *IPAddressUpdateOne) SetResponseCode(s string) *IPAddressUpdateOne {
 	iauo.mutation.SetResponseCode(s)
-	return iauo
-}
-
-// SetIPAddress sets the "ip_address" field.
-func (iauo *IPAddressUpdateOne) SetIPAddress(s string) *IPAddressUpdateOne {
-	iauo.mutation.SetIPAddress(s)
 	return iauo
 }
 
@@ -298,6 +285,12 @@ func (iauo *IPAddressUpdateOne) sqlSave(ctx context.Context) (_node *IPAddress, 
 			}
 		}
 	}
+	if iauo.mutation.UUIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: ipaddress.FieldUUID,
+		})
+	}
 	if value, ok := iauo.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -310,13 +303,6 @@ func (iauo *IPAddressUpdateOne) sqlSave(ctx context.Context) (_node *IPAddress, 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: ipaddress.FieldResponseCode,
-		})
-	}
-	if value, ok := iauo.mutation.IPAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: ipaddress.FieldIPAddress,
 		})
 	}
 	_node = &IPAddress{config: iauo.config}

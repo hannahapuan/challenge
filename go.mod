@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/mattn/go-sqlite3 v1.14.12
 	github.com/vektah/gqlparser/v2 v2.4.2
-	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
+	github.com/vmihailenco/msgpack/v5 v5.3.5
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 )
 
@@ -28,7 +28,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
-	github.com/vmihailenco/tagparser v0.1.2 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect

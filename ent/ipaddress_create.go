@@ -11,7 +11,6 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 )
 
 // IPAddressCreate is the builder for creating a IPAddress entity.
@@ -22,8 +21,16 @@ type IPAddressCreate struct {
 }
 
 // SetUUID sets the "uuid" field.
-func (iac *IPAddressCreate) SetUUID(u uuid.UUID) *IPAddressCreate {
-	iac.mutation.SetUUID(u)
+func (iac *IPAddressCreate) SetUUID(s string) *IPAddressCreate {
+	iac.mutation.SetUUID(s)
+	return iac
+}
+
+// SetNillableUUID sets the "uuid" field if the given value is not nil.
+func (iac *IPAddressCreate) SetNillableUUID(s *string) *IPAddressCreate {
+	if s != nil {
+		iac.SetUUID(*s)
+	}
 	return iac
 }
 
@@ -150,9 +157,6 @@ func (iac *IPAddressCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (iac *IPAddressCreate) check() error {
-	if _, ok := iac.mutation.UUID(); !ok {
-		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "IPAddress.uuid"`)}
-	}
 	if _, ok := iac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "IPAddress.created_at"`)}
 	}
@@ -194,7 +198,7 @@ func (iac *IPAddressCreate) createSpec() (*IPAddress, *sqlgraph.CreateSpec) {
 	)
 	if value, ok := iac.mutation.UUID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: ipaddress.FieldUUID,
 		})

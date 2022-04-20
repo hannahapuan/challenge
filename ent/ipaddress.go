@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/uuid"
 )
 
 // IPAddress is the model entity for the IPAddress schema.
@@ -18,7 +17,7 @@ type IPAddress struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// UUID holds the value of the "uuid" field.
-	UUID uuid.UUID `json:"uuid,omitempty"`
+	UUID string `json:"uuid,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -36,12 +35,10 @@ func (*IPAddress) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case ipaddress.FieldID:
 			values[i] = new(sql.NullInt64)
-		case ipaddress.FieldResponseCode, ipaddress.FieldIPAddress:
+		case ipaddress.FieldUUID, ipaddress.FieldResponseCode, ipaddress.FieldIPAddress:
 			values[i] = new(sql.NullString)
 		case ipaddress.FieldCreatedAt, ipaddress.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case ipaddress.FieldUUID:
-			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type IPAddress", columns[i])
 		}
@@ -64,10 +61,10 @@ func (ia *IPAddress) assignValues(columns []string, values []interface{}) error 
 			}
 			ia.ID = int(value.Int64)
 		case ipaddress.FieldUUID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field uuid", values[i])
-			} else if value != nil {
-				ia.UUID = *value
+			} else if value.Valid {
+				ia.UUID = value.String
 			}
 		case ipaddress.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -122,7 +119,7 @@ func (ia *IPAddress) String() string {
 	builder.WriteString("IPAddress(")
 	builder.WriteString(fmt.Sprintf("id=%v", ia.ID))
 	builder.WriteString(", uuid=")
-	builder.WriteString(fmt.Sprintf("%v", ia.UUID))
+	builder.WriteString(ia.UUID)
 	builder.WriteString(", created_at=")
 	builder.WriteString(ia.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
