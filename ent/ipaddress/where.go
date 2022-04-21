@@ -224,20 +224,6 @@ func UUIDHasSuffix(v string) predicate.IPAddress {
 	})
 }
 
-// UUIDIsNil applies the IsNil predicate on the "uuid" field.
-func UUIDIsNil() predicate.IPAddress {
-	return predicate.IPAddress(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldUUID)))
-	})
-}
-
-// UUIDNotNil applies the NotNil predicate on the "uuid" field.
-func UUIDNotNil() predicate.IPAddress {
-	return predicate.IPAddress(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldUUID)))
-	})
-}
-
 // UUIDEqualFold applies the EqualFold predicate on the "uuid" field.
 func UUIDEqualFold(v string) predicate.IPAddress {
 	return predicate.IPAddress(func(s *sql.Selector) {

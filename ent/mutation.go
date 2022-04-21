@@ -172,22 +172,9 @@ func (m *IPAddressMutation) OldUUID(ctx context.Context) (v string, err error) {
 	return oldValue.UUID, nil
 }
 
-// ClearUUID clears the value of the "uuid" field.
-func (m *IPAddressMutation) ClearUUID() {
-	m.uuid = nil
-	m.clearedFields[ipaddress.FieldUUID] = struct{}{}
-}
-
-// UUIDCleared returns if the "uuid" field was cleared in this mutation.
-func (m *IPAddressMutation) UUIDCleared() bool {
-	_, ok := m.clearedFields[ipaddress.FieldUUID]
-	return ok
-}
-
 // ResetUUID resets all changes to the "uuid" field.
 func (m *IPAddressMutation) ResetUUID() {
 	m.uuid = nil
-	delete(m.clearedFields, ipaddress.FieldUUID)
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -479,11 +466,7 @@ func (m *IPAddressMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *IPAddressMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(ipaddress.FieldUUID) {
-		fields = append(fields, ipaddress.FieldUUID)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -496,11 +479,6 @@ func (m *IPAddressMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *IPAddressMutation) ClearField(name string) error {
-	switch name {
-	case ipaddress.FieldUUID:
-		m.ClearUUID()
-		return nil
-	}
 	return fmt.Errorf("unknown IPAddress nullable field %s", name)
 }
 

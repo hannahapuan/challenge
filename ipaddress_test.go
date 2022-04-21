@@ -24,7 +24,7 @@ func IPAddressCreate_Test() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 	rec1, err := client.IPAddress.Create().
-		SetUUID(uuid.New()).
+		SetUUID(uuid.New().String()).
 		SetIPAddress("123.345.346").
 		SetResponseCode("200").
 		Save(ctx)
@@ -33,7 +33,7 @@ func IPAddressCreate_Test() {
 	}
 	fmt.Printf("%d: %q\n", rec1.ID, rec1.IPAddress)
 	rec2, err := client.IPAddress.Create().
-		SetUUID(uuid.New()).
+		SetUUID(uuid.New().String()).
 		SetIPAddress("222.222.222").
 		SetResponseCode("404").
 		Save(ctx)

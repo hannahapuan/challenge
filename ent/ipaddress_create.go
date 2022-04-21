@@ -26,14 +26,6 @@ func (iac *IPAddressCreate) SetUUID(s string) *IPAddressCreate {
 	return iac
 }
 
-// SetNillableUUID sets the "uuid" field if the given value is not nil.
-func (iac *IPAddressCreate) SetNillableUUID(s *string) *IPAddressCreate {
-	if s != nil {
-		iac.SetUUID(*s)
-	}
-	return iac
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (iac *IPAddressCreate) SetCreatedAt(t time.Time) *IPAddressCreate {
 	iac.mutation.SetCreatedAt(t)
@@ -157,6 +149,9 @@ func (iac *IPAddressCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (iac *IPAddressCreate) check() error {
+	if _, ok := iac.mutation.UUID(); !ok {
+		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "IPAddress.uuid"`)}
+	}
 	if _, ok := iac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "IPAddress.created_at"`)}
 	}

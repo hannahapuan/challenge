@@ -12,8 +12,6 @@ type IPAddress struct {
 	ent.Schema
 }
 
-// TODO: add validation for ipv4 to ipaddress field value
-// TODO: add validation for response codes
 // Fields of the IPAddress.
 func (IPAddress) Fields() []ent.Field {
 	return []ent.Field{

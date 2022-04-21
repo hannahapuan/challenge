@@ -5,11 +5,11 @@ package ipaddress
 
 import (
 	"challenge/ent"
-	"challenge/ent/ipaddress"
+	"challenge/spamhaus"
 	"context"
 	"fmt"
+	"time"
 
-	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
 
@@ -19,32 +19,72 @@ func (r *iPAddressResolver) UUID(ctx context.Context, obj *ent.IPAddress) (int, 
 
 func (r *mutationResolver) Enqueue(ctx context.Context, input []string) ([]*ent.IPAddress, error) {
 	var export []*ent.IPAddress
-
+	var errs error
 	for _, ia := range input {
-		_, err := r.client.IPAddress.Create().
-			SetUUID(uuid.New().String()).
-			SetIPAddress(ia).
-			SetResponseCode("400").
-			Save(ctx)
-
-		if err != nil {
-			return nil, err
+		if !validIPv4(ia) {
+			errs = fmt.Errorf("%v: %v", errs, fmt.Errorf("invalid IP provided. Only IPv4 is supported."))
+			continue
 		}
+		// check if ip address exists in table
+		resp, err := queryIPRecord(ctx, r.client, ia)
+		if err != nil {
+			errs = fmt.Errorf("%v: %v", errs, err)
+			continue
+		}
+
+		// if ip address does not exist, create a new record
+		if len(resp) == 0 {
+			// query spamhaus for response code of blacklist status
+			resp, err := spamhaus.Query(ia)
+			if err != nil {
+				errs = fmt.Errorf("%w: %w", errs, err)
+				continue
+			}
+
+			// create record to store ipaddress record information in
+			ipar := createIPAddressRecord{
+				uuid: uuid.New().String(),
+				ip:   ia,
+				resp: fmt.Sprintf("%+v\n%+v", resp, err),
+			}
+
+			// create IP record
+			err = createIPRecord(ctx, r.client, ipar)
+			if err != nil {
+				errs = fmt.Errorf("%w: %w", errs, err)
+				continue
+			}
+
+			export = append(export, &ent.IPAddress{
+				IPAddress: ipar.ip,
+			})
+			continue
+		}
+
+		// ip address exists in table, update
+
+		// create record to store ipaddress record information in
+		ipar := updateIPAddressRecord{
+			resp:      fmt.Sprintf("%+v\n%+v", resp, err),
+			updatedAt: time.Now(),
+		}
+
+		err = updateIPRecord(ctx, r.client, ipar)
+		if err != nil {
+			errs = fmt.Errorf("%v: %v", errs, err)
+			continue
+		}
+
 		export = append(export, &ent.IPAddress{
 			IPAddress: ia,
 		})
 	}
-	return export, nil
+
+	return export, errs
 }
 
 func (r *queryResolver) GetIPDetails(ctx context.Context, ip string) (*ent.IPAddress, error) {
-	resp, err := r.client.IPAddress.Query().
-		Where(func(s *sql.Selector) {
-			s.Where(sql.In(ipaddress.FieldIPAddress, ip))
-		}).
-		All(ctx)
-
-	err = getIPDetailsError(resp, err)
+	resp, err := queryIPRecord(ctx, r.client, ip)
 	if err != nil {
 		return nil, err
 	} else if len(resp) == 0 {
