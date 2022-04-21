@@ -14,7 +14,6 @@ import (
 
 	"entgo.io/ent/dialect"
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -43,13 +42,7 @@ func main() {
 	srv := handler.NewDefaultServer(ch.NewSchema(client))
 	http.Handle("/graphql", srv)
 	log.Printf("listening on :%s\n", port)
-	http.Handle("/",
-		playground.Handler("IpAddress", "/query"),
-	)
-	// if err := http.ListenAndServe(fmt.Sprintf(":%s", port), BasicAuth(nil, "secureworks", "supersecret")); err != nil {
-	// 	log.Fatal("http server terminated", err)
-	// }
-	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), BasicAuth(nil, "secureworks", "supersecret")); err != nil {
 		log.Fatal("http server terminated", err)
 	}
 }

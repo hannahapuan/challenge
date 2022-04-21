@@ -32,8 +32,21 @@ GraphQL application which utilizes the ORM [ent](https://entgo.io/) and [gqlgen]
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+Clone repo
+```
+git clone github.com/hannahapuan/challenge && cd challenge
+```
+
+Build docker image
+```
+docker build -t challenge .
+```
+
+Run image, specify environment variables (port), and expose port
+```
+docker run -p 8080:8081 -e port=8081 -it challenge
+```
+
 
 ### Executing program
 

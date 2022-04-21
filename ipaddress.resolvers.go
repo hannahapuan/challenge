@@ -18,6 +18,10 @@ func (r *iPAddressResolver) UUID(ctx context.Context, obj *ent.IPAddress) (int, 
 }
 
 func (r *mutationResolver) Enqueue(ctx context.Context, input []string) ([]*ent.IPAddress, error) {
+	// Enqueue kicks off a background job to do the DNS lookup and store it in
+	// the database for each IP passed in for future lookups
+	// If the lookup has already happened, enqueue queues it up again and
+	// updates the `response` and `updated_at` fields
 	var export []*ent.IPAddress
 	var errs error
 	for _, ia := range input {
@@ -51,7 +55,7 @@ func (r *mutationResolver) Enqueue(ctx context.Context, input []string) ([]*ent.
 			// create IP record
 			err = createIPRecord(ctx, r.client, ipar)
 			if err != nil {
-				errs = fmt.Errorf("%w: %w", errs, err)
+				errs = fmt.Errorf("%v: %v", errs, err)
 				continue
 			}
 
@@ -84,6 +88,7 @@ func (r *mutationResolver) Enqueue(ctx context.Context, input []string) ([]*ent.
 }
 
 func (r *queryResolver) GetIPDetails(ctx context.Context, ip string) (*ent.IPAddress, error) {
+	// GetIPDetails looks up IP Address in the database
 	resp, err := queryIPRecord(ctx, r.client, ip)
 	if err != nil {
 		return nil, err
