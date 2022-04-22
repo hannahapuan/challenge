@@ -1,6 +1,6 @@
 module challenge
 
-go 1.18
+go 1.16
 
 require (
 	entgo.io/contrib v0.2.0
