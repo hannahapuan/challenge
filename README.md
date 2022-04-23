@@ -44,7 +44,8 @@ docker build -t challenge .
 
 - Run image, specify environment variables (port), and expose port
 ```
-docker run -p 8080:8081 -e port=8081 -it challenge
+ docker run  -p 8081:8081 -e port=8081 -it challenge
+
 ```
 * note that the port environment variable if not specified will default to 8081
 

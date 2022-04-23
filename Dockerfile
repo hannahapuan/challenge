@@ -1,12 +1,23 @@
-FROM --platform=linux/arm64 golang:1.18
+FROM golang:alpine
 
-RUN mkdir /challenge
-ADD . /challenge
-WORKDIR /challenge
+ENV GO111MODULE=on \
+    CGO_ENABLED=1 \
+    GOOS=linux \
+    GOARCH=amd64
+
+WORKDIR /build
+RUN apk update
+RUN apk upgrade
+RUN apk add build-base
+RUN apk add git
+
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
-RUN go mod tidy
-RUN go build -o main .
-RUN chmod +x main
 
-CMD ["/challenge/main"]
-
+COPY . .
+RUN go build -a -v ./cmd/ipaddress
+WORKDIR /dist
+RUN cp -R /build/* .
+RUN cd ./cmd/ipaddress
+CMD ["./ipaddress"]
