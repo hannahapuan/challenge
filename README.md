@@ -49,4 +49,4 @@ docker build -t challenge .
 ```
 * note that the port environment variable if not specified will default to 8081
 
-- Querying is avaliable on the `/graphql` endpoint
+- Querying is avaliable on the `localhost:8081/graphql` endpoint
