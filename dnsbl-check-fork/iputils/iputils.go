@@ -7,10 +7,13 @@ func reverseStringByToken(str string, delimiter string) string {
 		return ""
 	}
 
-	before, after, found := strings.Cut(str, delimiter)
-
-	if !found {
-		return before
+	// strings.Cut not available in Go 1.16 (as set by the go.mod).
+	var before, after string
+	if i := strings.Index(str, delimiter); i >= 0 {
+		before = str[:i]
+		after = str[i+len(delimiter):]
+	} else {
+		return str
 	}
 
 	return reverseStringByToken(after, delimiter) + delimiter + before

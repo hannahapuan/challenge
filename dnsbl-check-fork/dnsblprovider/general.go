@@ -5,7 +5,7 @@ import (
 	"net"
 	"strings"
 
-	"challenge/dnsbl-check/iputils"
+	"challenge/dnsbl-check-fork/iputils"
 )
 
 func isNoHostError(err error) bool {

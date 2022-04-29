@@ -1,9 +1,8 @@
 package spamhaus
 
 import (
-	dc "challenge/dnsbl-check"
-	dnsblcheck "challenge/dnsbl-check"
-	"challenge/dnsbl-check/dnsblprovider"
+	"challenge/dnsbl-check-fork"
+	"challenge/dnsbl-check-fork/dnsblprovider"
 )
 
 const spamhausRBL = "zen.spamhaus.org"
@@ -13,7 +12,7 @@ func Query(addr string) (string, error) {
 	spamhausProvider := dnsblprovider.GeneralProvider{
 		URL: spamhausRBL,
 	}
-	lr := dc.Lookup(addr, spamhausProvider)
+	lr := dnsblcheck.Lookup(addr, spamhausProvider)
 
 	return dnsblcheck.ProcessLookupResult(lr), nil
 }
