@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"challenge/dnsbl-check/stringutils"
+	"challenge/dnsbl-check-fork/stringutils"
 )
 
 func negate(f func(string) bool) func(string) bool {

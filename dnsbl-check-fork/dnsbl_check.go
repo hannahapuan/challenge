@@ -11,8 +11,8 @@ import (
 	"os"
 	"sync"
 
-	"challenge/dnsbl-check/dnsblprovider"
-	"challenge/dnsbl-check/providerlist"
+	"challenge/dnsbl-check-fork/dnsblprovider"
+	"challenge/dnsbl-check-fork/providerlist"
 )
 
 // LookupResult stores the query result with reason
